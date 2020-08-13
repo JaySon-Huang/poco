@@ -325,6 +325,12 @@ public:
 		///
 		/// See X509Certificate::verify() for more information.
 
+    void setAdhocVerification(std::function<bool(const Poco::Crypto::X509Certificate &)> checker) {adhocVerification = checker;}
+
+    bool useAdhocVerification() {return adhocVerification != nullptr;}
+
+    bool adhocVerificate(const Poco::Crypto::X509Certificate & cert) { return adhocVerification(cert); }
+
 	bool extendedCertificateVerificationEnabled() const;
 		/// Returns true iff automatic extended certificate
 		/// verification is enabled.
@@ -370,6 +376,8 @@ private:
 	SSL_CTX* _pSSLContext;
 	CAPaths _caPaths;
 	bool _extendedCertificateVerification;
+
+	std::function<bool(const Poco::Crypto::X509Certificate &)> adhocVerification;
 };
 
 
