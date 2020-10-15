@@ -126,7 +126,7 @@ PKCS12Container::~PKCS12Container()
 }
 
 
-std::string PKCS12Container::extractFriendlyName(X509* pCert)
+/*std::string PKCS12Container::extractFriendlyName(X509* pCert)
 {
 	std::string friendlyName;
 	if(!pCert) throw NullPointerException("PKCS12Container::extractFriendlyName(X509)");
@@ -137,7 +137,7 @@ std::string PKCS12Container::extractFriendlyName(X509* pCert)
 
 	friendlyName = std::string(name, namelen);
 	return friendlyName;
-}
+}*/
 
 
 void PKCS12Container::load(PKCS12* pPKCS12, const std::string& password)
@@ -151,7 +151,7 @@ void PKCS12Container::load(PKCS12* pPKCS12, const std::string& password)
 			if (pCert)
 			{
 				_pX509Cert.reset(new X509Certificate(pCert, true));
-				_pkcsFriendlyName = extractFriendlyName(pCert);
+				//_pkcsFriendlyName = extractFriendlyName(pCert);
 			}
 			else _pX509Cert.reset();
 
@@ -166,7 +166,7 @@ void PKCS12Container::load(PKCS12* pPKCS12, const std::string& password)
 					if (pX509)
 					{
 						_caCertList.push_back(X509Certificate(pX509, true));
-						_caCertNames.push_back(extractFriendlyName(pX509));
+						//_caCertNames.push_back(extractFriendlyName(pX509));
 					}
 					else throw OpenSSLException("PKCS12Container::load()");
 				}
