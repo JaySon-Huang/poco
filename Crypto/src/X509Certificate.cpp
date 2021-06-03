@@ -28,6 +28,11 @@
 #include <openssl/err.h>
 #include <openssl/evp.h>
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#define ASN1_STRING_get0_data ASN1_STRING_data
+#define X509_get0_notBefore X509_get_notBefore
+#define X509_get0_notAfter X509_get_notAfter
+#endif
 
 namespace Poco {
 namespace Crypto {
@@ -255,7 +260,7 @@ void X509Certificate::extractNames(std::string& cmnName, std::set<std::string>& 
 			const GENERAL_NAME* name = sk_GENERAL_NAME_value(names, i);
 			if (name->type == GEN_DNS)
 			{
-				const char* data = reinterpret_cast<char*>(ASN1_STRING_data(name->d.ia5));
+				const char* data = reinterpret_cast<const char*>(ASN1_STRING_get0_data(name->d.ia5));
 				std::size_t len = ASN1_STRING_length(name->d.ia5);
 				domainNames.insert(std::string(data, len));
 			}
@@ -380,6 +385,20 @@ void X509Certificate::print(std::ostream& out) const
 	out << "organizationUnitName: " << subjectName(X509Certificate::NID_ORGANIZATION_UNIT_NAME) << std::endl;
 	out << "emailAddress: " << subjectName(X509Certificate::NID_PKCS9_EMAIL_ADDRESS) << std::endl;
 	out << "serialNumber: " << subjectName(X509Certificate::NID_SERIAL_NUMBER) << std::endl;
+}
+
+
+void X509Certificate::printAll(std::ostream& out) const
+{
+	X509_NAME *subj = X509_get_subject_name(_pCert);
+
+	for (int i = 0; i < X509_NAME_entry_count(subj); ++i)
+	{
+		X509_NAME_ENTRY* e = X509_NAME_get_entry(subj, i);
+		ASN1_STRING* d = X509_NAME_ENTRY_get_data(e);
+		const unsigned char* str = ASN1_STRING_get0_data(d);
+		out << (const char*) str << std::endl;
+	}
 }
 
 

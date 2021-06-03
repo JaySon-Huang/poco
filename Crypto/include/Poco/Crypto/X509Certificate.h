@@ -162,6 +162,8 @@ public:
 	void print(std::ostream& out) const;
 		/// Prints the certificate information to ostream.
 
+	void printAll(std::ostream & out) const;
+
 	static List readPEM(const std::string& pemFileName);
 		/// Reads and returns a list of certificates from
 		/// the specified PEM file.
@@ -170,9 +172,9 @@ public:
 		/// Writes the list of certificates to the specified PEM file.
 
 protected:
-	void load(std::istream& stream);
-		/// Loads the certificate from the given stream. The
-		/// certificate must be in PEM format.
+	void load(std::istream & stream);
+	/// Loads the certificate from the given stream. The
+	/// certificate must be in PEM format.
 
 	void load(const std::string& path);
 		/// Loads the certificate from the given file. The
