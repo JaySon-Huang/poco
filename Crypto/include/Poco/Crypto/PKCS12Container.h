@@ -88,7 +88,7 @@ public:
 
 private:
 	void load(PKCS12* pPKCS12, const std::string& password = "");
-//	std::string extractFriendlyName(X509* pCert);
+	std::string extractFriendlyName(X509* pCert);
 
 #ifdef POCO_ENABLE_CPP11
 	typedef std::unique_ptr<X509Certificate> CertPtr;
