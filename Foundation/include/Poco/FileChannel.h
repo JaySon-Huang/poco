@@ -234,7 +234,7 @@ public:
 protected:
 	~FileChannel();
 	void setRotation(const std::string& rotation);
-	void setArchive(const std::string& archive);
+	virtual void setArchive(const std::string& archive);
 	void setCompress(const std::string& compress);
 	void setStreamCompress(const std::string& streamCompress);
 	void setPurgeAge(const std::string& age);
@@ -244,8 +244,8 @@ protected:
 	void purge();
 	void unsafeOpen();
 
-private:
-	LogFile * newLogFile();
+protected:
+    LogFile * newLogFile();
 	void archiveCorrupted(const std::string& path);
 	bool setNoPurge(const std::string& value);
 	int extractDigit(const std::string& value, std::string::const_iterator* nextToDigit = NULL) const;
