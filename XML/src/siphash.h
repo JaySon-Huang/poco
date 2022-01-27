@@ -155,10 +155,11 @@ sip_tokey(struct sipkey *key, const void *src) {
 
 #  define sip_binof(v) sip_tobin((unsigned char[8]){0}, (v))
 
-static void *
-sip_tobin(void *dst, uint64_t u64) {
-  SIP_U64TO8_LE((unsigned char *)dst, u64);
-  return dst;
+[[maybe_unused]] static void *
+sip_tobin(void * dst, uint64_t u64)
+{
+    SIP_U64TO8_LE((unsigned char *)dst, u64);
+    return dst;
 } /* sip_tobin() */
 
 #endif /* SIPHASH_TOBIN */
@@ -284,7 +285,7 @@ siphash24(const void *src, size_t len, const struct sipkey *key) {
  * ...
  * in = 00 01 02 ... 3e (63 bytes)
  */
-static int
+[[maybe_unused]] static int
 sip24_valid(void) {
   /* clang-format off */
   static const unsigned char vectors[64][8] = {
