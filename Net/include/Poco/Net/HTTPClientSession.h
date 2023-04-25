@@ -34,6 +34,10 @@ namespace Net {
 class HTTPRequest;
 class HTTPResponse;
 
+struct HTTPSendMetrics
+{
+	Poco::Int64 connect_ms = 0;
+};
 
 class Net_API HTTPClientSession: public HTTPSession
 	/// This class implements the client-side of
@@ -204,7 +208,7 @@ public:
 	const Poco::Timespan& getKeepAliveTimeout() const;
 		/// Returns the connection timeout for HTTP connections.
 
-	virtual std::ostream& sendRequest(HTTPRequest& request);
+	virtual std::ostream& sendRequest(HTTPRequest& request, HTTPSendMetrics* metrics = nullptr);
 		/// Sends the header for the given HTTP request to
 		/// the server.
 		///

@@ -225,7 +225,7 @@ void HTTPClientSession::setKeepAliveTimeout(const Poco::Timespan& timeout)
 }
 
 
-std::ostream& HTTPClientSession::sendRequest(HTTPRequest& request)
+std::ostream & HTTPClientSession::sendRequest(HTTPRequest & request, HTTPSendMetrics* metrics)
 {
 	_pRequestStream = 0;
 	_pResponseStream = 0;
@@ -241,7 +241,14 @@ std::ostream& HTTPClientSession::sendRequest(HTTPRequest& request)
 	try
 	{
 		if (!connected())
+		{
+			Poco::Timestamp connectTimestamp;
 			reconnect();
+			if (metrics)
+			{
+				metrics->connect_ms = connectTimestamp.elapsed() / 1000.0;
+			}
+		}
 		if (!keepAlive)
 			request.setKeepAlive(false);
 		if (!request.has(HTTPRequest::HOST) && !_host.empty())
@@ -253,6 +260,7 @@ std::ostream& HTTPClientSession::sendRequest(HTTPRequest& request)
 		}
 		_reconnect = keepAlive;
 		_expectResponseBody = request.getMethod() != HTTPRequest::HTTP_HEAD;
+
 		const std::string& method = request.getMethod();
 		if (request.getChunkedTransferEncoding())
 		{
@@ -429,7 +437,7 @@ std::string HTTPClientSession::proxyRequestPrefix() const
 {
 	std::string result("http://");
 	result.append(_host);
-	/// Do not append default by default, since this may break some servers.
+	/// Do not append by default, since this may break some servers.
 	/// One example of such server is GCS (Google Cloud Storage).
 	if (_port != HTTPSession::HTTP_PORT)
 	{
